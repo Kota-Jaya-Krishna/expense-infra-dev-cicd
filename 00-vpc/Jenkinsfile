@@ -20,7 +20,7 @@ pipeline {
                 sh """
                     cd  00-vpc
                     terraform init -reconfigure
-                    terrafrom plan -out=tfplan
+                    terraform plan -out=tfplan
                 """
                 }
             }
