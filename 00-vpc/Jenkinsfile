@@ -48,7 +48,9 @@ pipeline {
         }
 
         stage ('Trigger SG') {
+            steps {
             build job: '10-sg', parameters: [[$class: 'ChoiceParameterValue', name: 'ACTION', value: 'Apply']]
+            }
         }
     }
         post { 
