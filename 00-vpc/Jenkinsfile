@@ -49,7 +49,7 @@ pipeline {
 
         stage ('Trigger SG') {
             steps {
-            build job: '10-sg', parameters: [[$class: 'ChoiceParameterValue', name: 'ACTION', value: 'Apply']]
+            build job: '10-sg', parameters: [string(name: 'ACTION', value: "Apply")], wait: false   //The pipeline does not wait for the 10-sg job to finish. It kicks it off and moves on immediately//
             }
         }
     }
