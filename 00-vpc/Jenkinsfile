@@ -5,7 +5,8 @@ pipeline {
 
     options {
         timeout(time: 30, unit: 'MINUTES')     //pipeline will fail if it runs more than 10 sec//
-        disableConcurrentBuilds()              // we should not run two build at same time, so we need to use disableconcurrentbuilds//
+        disableConcurrentBuilds()             // we should not run two build at same time, so we need to use disableconcurrentbuilds//
+        ansiColor('xterm')
     }
 
     parameters {
