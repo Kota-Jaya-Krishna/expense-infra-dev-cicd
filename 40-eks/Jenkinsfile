@@ -18,7 +18,7 @@ pipeline {
             steps {
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                 sh """
-                    cd 10-sg
+                    cd 40-eks
                     terraform init -reconfigure
                     terraform plan -out=tfplan
                 """
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                 sh """
-                    cd 10-sg
+                    cd 40-eks
                     if [ ${params.ACTION} == 'Apply' ]
                     then
                         terraform apply -auto-approve tfplan
@@ -43,31 +43,6 @@ pipeline {
                         terraform destroy -auto-approve
                     fi
                 """
-                }
-            }
-        }
-        stage ('Destroy VPC') {
-            when {
-                expression { params.ACTION == 'Destroy' }
-            }
-            steps {
-                build job: '00-vpc', parameters: [string(name: 'ACTION', value: "Destroy")], wait: false   //The pipeline does not wait for the 00-vpc job to finish. It kicks it off and moves on immediately//
-            }
-        }
-        stage('Parallel In Sequential') {
-            when {
-                expression { params.ACTION == 'Apply' }
-            }
-            parallel {
-                stage('Bastion') {
-                    steps {
-                        build job: '20-bastion', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
-                    }
-                }
-                stage('EKS') {
-                    steps {
-                        build job: '40-eks', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
-                    }
                 }
             }
         }

@@ -48,8 +48,11 @@ pipeline {
         }
 
         stage ('Trigger SG') {
+            when {
+                expression { params.ACTION == 'Apply' }
+            }
             steps {
-            build job: '10-sg', parameters: [string(name: 'ACTION', value: "Apply")], wait: false   //The pipeline does not wait for the 10-sg job to finish. It kicks it off and moves on immediately//
+                build job: '10-sg', parameters: [string(name: 'ACTION', value: "Apply")], wait: false   //The pipeline does not wait for the 10-sg job to finish. It kicks it off and moves on immediately//
             }
         }
     }
