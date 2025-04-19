@@ -1,0 +1,44 @@
+pipeline {
+    agent {
+        label 'AGENT-1'
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')     //pipeline will fail if it runs more than 10 sec//
+        disableConcurrentBuilds()              // we should not run two build at same time, so we need to use disableconcurrentbuilds//
+    }
+
+    parameters {
+        choice(name: 'ACTION', choices: ['Apply', 'Destroy'], description: 'Select Action')
+    }
+
+    stages {
+        stage('Init') {
+            steps {
+                sh 'cd 00-vpc'
+                sh 'terraform init --reconfigure'
+            }
+        }
+        stage('Plan') {
+            steps {
+                withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    sh 'cd 00-vpc'
+                    sh 'terrafrom plan -out=tfplan'
+                }
+            }
+        }
+
+    }
+        post { 
+        always { 
+            echo "This section run always"
+            deleteDir()             // after pipeline is triggered, we can add deletedir function,it will delete the directory where jenkins file is there
+        }
+        success {
+            echo "This section will run when pipeline success"
+        }
+        failure {
+            echo "This section will run when pipeline failure"
+        }
+    }
+}
