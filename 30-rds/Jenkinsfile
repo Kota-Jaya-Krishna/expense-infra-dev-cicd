@@ -12,7 +12,7 @@ pipeline {
     // }
 
     parameters {
-        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Action')
+        choice(name: 'ACTION', choices: ['Apply', 'Destroy'], description: 'Select Action')
     }
     stages {
         stage('Init and Plan') {
@@ -36,10 +36,10 @@ pipeline {
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
                         cd 30-rds
-                        if [ ${params.ACTION} == 'apply' ]
+                        if [ ${params.ACTION} == 'Apply' ]
                         then
                             terraform apply -auto-approve tfplan
-                        elif [ ${params.ACTION} == 'destroy' ]
+                        elif [ ${params.ACTION} == 'Destroy' ]
                         then
                             terraform destroy -auto-approve
                         fi
