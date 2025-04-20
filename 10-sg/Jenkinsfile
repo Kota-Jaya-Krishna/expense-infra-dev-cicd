@@ -27,10 +27,10 @@ pipeline {
         }
 
         stage('Apply or Destroy') {
-            input {
-                message "Should we continue to ${params.ACTION}"
-                ok "Yes, we should."
-            }
+            // input {
+            //     message "Should we continue to ${params.ACTION}"
+            //     ok "Yes, we should."
+            // }
             steps {
                 withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                 sh """
@@ -54,7 +54,7 @@ pipeline {
                 build job: '00-vpc', parameters: [string(name: 'ACTION', value: "Destroy")], wait: false   //The pipeline does not wait for the 00-vpc job to finish. It kicks it off and moves on immediately//
             }
         }
-        stage('Parallel In Sequential') {
+        stage('Parallel') {
             when {
                 expression { params.ACTION == 'Apply' }
             }
@@ -67,6 +67,39 @@ pipeline {
                 stage('EKS') {
                     steps {
                         build job: '40-eks', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
+                    }
+                }
+                stage('RDS') {
+                    steps {
+                        build job: '30-rds', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
+                    }
+                }
+                stage('ECR') {
+                    steps {
+                        build job: '70-ecr', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
+                    }
+                }
+            }
+        }
+
+        stage('Sequential') {
+            when {
+                expression { params.ACTION == 'Apply' }
+            }
+            stages {
+                stage('ACM') {
+                    steps {
+                        build job: '50-acm', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
+                    }
+                }
+                stage('ALB') {
+                    steps {
+                        build job: '60-alb', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
+                    }
+                }
+                stage('CDN') {
+                    steps {
+                        build job: '80-cdn', parameters: [string(name: 'ACTION', value: "Apply")], wait: false 
                     }
                 }
             }

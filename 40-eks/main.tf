@@ -1,6 +1,9 @@
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks-terraform"
-  public_key = file("~/.ssh/eks_key.pub")
+  # public_key = file("~/.ssh/eks_key.pub")
+  # you can paste the public key directly like this
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCox4/d5QvxJApesUGZRod8ECDGE5dBdX+9j0KxvMKAWjZIeoklqcTR+kJouCVHdiyOkrReKuj95ppi+t5t22C/nOaHa3PLf8c5XZJ1t3NAJK608gIf1tHONg9kK07WU41beb/JYkdlbXWL+P83acx5/EIpch/Ur5v7oUg5ANCwOSKMEaabiUvWxJ8QDDIn+ZKn5NIj7h54O+4qTTTEDdbdtm5OSdYkIuVDqCWRr/XZtWCSAo5idEryPnbYhb3MqE3I2Z+tdF4J1o8eYgf/CcOg6maJP0V9LBPJb+cx+ehY+XhQb18ZgHLuAm8SHCYO2WbRu74egYbYbrU6FXelpW2T9P7Ru35iREWS/BRJ6CVW6/Ghi1+8CbSeyZDuF6UfMcmA0IfHgd+Q2dLXrOQdpQ0379kiuIYCwV+RvBDsgC7dAA3mjVXcpBgGTArhbiWw1umludJlOk90GO+FxsIywvd2z7E/Wzpb04O6IubEFgywEdeTk/vTMMQ8izXz7GlHQLs= HAI@DESKTOP-GNJ3GN1
+"
 }
 
 module "eks" {
